@@ -1,0 +1,21 @@
+
+<div id="chat_messages" hx-swap-oob="beforeend">
+
+<div class="fade-in-type">
+    {% include "a_rtchart/chat_message.html" %}
+</div>
+
+<style>
+    @keyframes fadeInAndUp {
+        from {opacity: 0; transform: translateY(12px);}
+        to {opacity: 1;transform: translateY(0px);}
+    }
+
+    .fade-in-type {
+        animation: fadeInAndUs 0.6s ease;
+    }
+</style>
+<script>
+    scrollToBottom()
+</script>
+</div>
