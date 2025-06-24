@@ -93,12 +93,26 @@ TEMPLATES = [
 # WSGI_APPLICATION = 'a_core.wsgi.application'
 ASGI_APPLICATION = "a_core.asgi.application"     #add
 
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer",
+        
+#     },
+# }
+
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-        
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis://default:HrfHGWHoIsazXWLTRnBjDNSxNPPxmjnz@shuttle.proxy.rlwy.net:37246")],
+        },
     },
 }
+
+print(CHANNEL_LAYERS,"::::::::::::::::::::::::::::")
+
+
+
 
 
 # Database

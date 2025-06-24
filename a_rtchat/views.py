@@ -5,7 +5,6 @@ from . forms import ChatMessageCreateForm
 
 
 def chat_view(request):
-    print("::::::::::::::::::::::::::")
     chat_group    = get_object_or_404(ChatGroup,group_name = "public_chat")
     chat_messages = chat_group.chat_messages.all().order_by('id')[:30]   
     form  = ChatMessageCreateForm()
@@ -24,4 +23,6 @@ def chat_view(request):
             return render(request,"partials/chat_message_p.html",context)
        
     context = {"chat_messages" :chat_messages,"form" : form } 
+    # for msg in chat_messages:
+    #     print(msg.author.profile.displayname)
     return render(request,"a_rtchart/chat.html",context )
