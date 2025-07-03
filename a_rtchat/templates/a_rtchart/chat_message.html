@@ -14,7 +14,7 @@
     <div class="flex justify-start">
         <div class="flex items-end mr-2" >
             <a href="{% url 'profile' message.author.username %}">
-                <img class="w-8 h-8 rounded-full object-cover" src="{{ message.auther.profile.avatar }}">
+                <img class="w-8 h-8 rounded-full object-cover" src="{{ message.author.profile.avatar }}">
             </a>
         </div>
         <div class="flex items-end" >
@@ -27,8 +27,8 @@
         </div>  
     </div>
     <div class="text-sm font-light py-1 ml-10">
-        <span class="text-white">{{ message.auther.profile.name }}</span> 
-        <span class="text-gray-400">@{{ message.auther.username }}rt</span>
+        <span class="text-white">{{ message.author.profile.name }}</span> 
+        <span class="text-gray-400">@{{ message.author.profile.displayname }}</span>
     </div>
 </li>
 {% endif %}
