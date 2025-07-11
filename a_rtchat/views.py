@@ -1,7 +1,8 @@
 from django.shortcuts import render,get_object_or_404,redirect
+from django.contrib import messages
 from django.contrib.auth.models import User
 from . models import ChatGroup
-from . forms import ChatMessageCreateForm
+from . forms import *
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 # Create your views here.
@@ -21,6 +22,14 @@ def chat_view(request, chatroom_name = 'public_chat'):
             if member != request.user:
                 other_user = member
                 break
+
+    if chat_group.groupchat_name:
+        if request.user not in chat_group.members.all():
+            if request.user.emailaddress_set.filter(verified = True).exists():
+                chat_group.members.add(request.user)
+            else:
+                messages.warning(request,"You need to verify your email to join the chat")
+                return redirect("profile-settings")
 
     if request.htmx:
         data = request.POST
@@ -66,3 +75,24 @@ def get_or_create_chatroom(request, username):
         chatroom.members.add(other_user, request.user)
         
     return redirect('chatroom', chatroom.group_name)
+
+
+
+# group chat
+@login_required
+def create_groupchat(request):
+    form    = NewGroupForm()
+    if request.method == "POST":
+        form = NewGroupForm(request.POST)
+        if form.is_valid():
+            new_chatgroup = form.save(commit=False)
+            new_chatgroup.admin = request.user
+            new_chatgroup.save()
+            new_chatgroup.members.add(request.user)
+            return redirect('chatroom',new_chatgroup.group_name)
+        
+
+    context = {
+        "form"  : form
+    }
+    return render(request,"a_rtchart/create_groupchat.html",context)
