@@ -1,0 +1,85 @@
+{% block content %}
+
+<!-- Embedded Styles -->
+<style>
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .modal-box {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .modal-box h2 {
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+
+  .modal-box p {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-box button {
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-yes {
+    background-color: #e11d48;
+    color: white;
+  }
+
+  .btn-yes:hover {
+    background-color: #be123c;
+  }
+
+  .btn-no {
+    background-color: #d1d5db;
+    color: #111827;
+  }
+
+  .btn-no:hover {
+    background-color: #9ca3af;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
+<!-- a_rtchat/partials/leave_chat.html -->
+<div id="leaveModal" class="modal-overlay">
+  <div class="modal-box">
+    <h2>Leave the chat?</h2>
+    <p>Are you sure you want to leave this chat?</p>
+    <form method="POST" action="{% url 'chatroom-leave' chat_group.group_name %}">
+      {% csrf_token %}
+      <button type="submit" class="btn-yes">Yes</button>
+      <button type="button" class="btn-no" onclick="document.getElementById('leaveModal').style.display = 'none';">
+        No
+      </button>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

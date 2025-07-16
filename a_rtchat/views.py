@@ -96,3 +96,57 @@ def create_groupchat(request):
         "form"  : form
     }
     return render(request,"a_rtchart/create_groupchat.html",context)
+
+@login_required
+def chatroom_edit_view(request, chatroom_name):
+    chat_group  = get_object_or_404(ChatGroup,group_name = chatroom_name)
+    if request.user != chat_group.admin:
+        raise Http404()
+    
+    form  =  ChatRoomEditForm(instance= chat_group)
+
+    if request.method == 'POST':
+        form = ChatRoomEditForm(request.POST, instance=chat_group)
+        if form.is_valid():
+            form.save()
+
+            remove_members = request.POST.getlist('remove_members')
+            for member_id in remove_members:
+                member = User.objects.get(id = member_id)
+                if member:
+                    chat_group.members.remove(member)
+                
+            return redirect('chatroom', chatroom_name)
+    context = {
+        'form' : form,
+        "chat_group" : chat_group
+    }
+
+    return render(request,'a_rtchart/chatroom_edit.html',context)
+@login_required
+def delete_chatroom_view(request,chatroom_name):
+    chat_group = get_object_or_404(ChatGroup, group_name = chatroom_name)
+    if request.user !=  chat_group.admin:
+        raise Http404()
+    if request.method == 'POST':
+        if chat_group:
+            chat_group.delete()
+            messages.success(request,"Chatroom Deleted")
+            return redirect("home")
+
+
+    return render(request,'a_rtchart/chatroom_delete.html',{"chat_group": chat_group})
+
+@login_required
+def leave_chatroom_view(request, chatroom_name):
+    chat_group = get_object_or_404(ChatGroup,group_name = chatroom_name)
+    if request.user not in chat_group.members.all():
+        return Http404()
+    if request.method == "POST":
+        member = request.user
+        chat_group.members.remove(member)
+        messages.success(request,"You left the Chat")
+        return redirect('home')
+    
+    return render(request,'partials/leave_chat.html')
+    
