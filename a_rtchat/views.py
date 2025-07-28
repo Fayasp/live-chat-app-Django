@@ -10,8 +10,9 @@ from django.http import Http404
 
 def chat_view(request, chatroom_name = 'public_chat'):
     chat_group    = get_object_or_404(ChatGroup,group_name = chatroom_name)
-    chat_messages = chat_group.chat_messages.all().order_by('id')[:30]   
-    form  = ChatMessageCreateForm()
+    chat_messages = chat_group.chat_messages.all().order_by('-id')[:30]   
+    form          = ChatMessageCreateForm()
+    print(chat_messages)
 
 
     other_user = None

@@ -19,3 +19,14 @@
     scrollToBottom()
 </script>
 </div>
+
+
+{% with user = message.auther  %}
+{% if user in chat_group.users_online.all %}
+<div id="user-{{ user.id}}" class="green-dot border-2 border-grey-800 absolute -bottom-1 -right-1"></div>
+{% else %}
+<div id="user-{{ user.id}}" class="grey-dot border-2 border-grey-800 absolute -bottom-1 -right-1"></div>
+{% endif %}
+
+
+{% endwith %}
