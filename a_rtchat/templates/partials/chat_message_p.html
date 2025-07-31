@@ -16,12 +16,12 @@
     }
 </style>
 <script>
-    scrollToBottom()
+    scrollToBottom(100)
 </script>
 </div>
 
 
-{% with user = message.auther  %}
+{% with message.auther as user %}
 {% if user in chat_group.users_online.all %}
 <div id="user-{{ user.id}}" class="green-dot border-2 border-grey-800 absolute -bottom-1 -right-1"></div>
 {% else %}

@@ -56,8 +56,8 @@ class ChatroomConsumer(WebsocketConsumer):
         message = GroupMessage.objects.get(id = message_id)
 
         context = {
-            "message" : message,
-            "user"    : self.user,
+            "message"   : message,
+            "user"      : self.user,
             'chat_group': self.chatroom
         }
         html   = render_to_string("partials/chat_message_p.html",context)

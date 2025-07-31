@@ -14,7 +14,7 @@
     {% endif %}
 </div>
 
-
+<!-- # showing online sumbol in drop down -->
     <ul  id="chats-lists" x-show="chatDropdown" x-cloak
                 class="absolute right-0 mt-2 w-40 bg-white text-black rounded-md shadow-lg z-20"
                 x-transition:enter="transition ease-out duration-200"
@@ -49,11 +49,11 @@
                             {% if member != user %}
                                 <li class="relative">
                                     {% if chatroom.users_online.all and user not in chatroom.users_online.all  or chatroom.users_online.count > 1%}
-                                   <div class="green-dot absolute top-4 left-0"></div>
+                                   <div class="green-dot absolute top-4 left-0"></div>  
                                    {% else %}
                                    <div class="greylight-dot absolute top-4 left-0"></div>
                                    {% endif %}
-                                <a href="{% url 'chatroom' chatroom.group_name %}" class="block px-4 py-2 hover:bg-gray-100">{{ member.profile.name  }}</a>
+                                <a href="{% url 'chatroom' chatroom.group_name %}" class="block px-4 py-2 hover:bg-gray-100">{{ member.profile.name }}</a>
                                 </li>
                             {% endif %}
                         {% endfor %}
@@ -61,3 +61,7 @@
                 {% endfor %}
              
             </ul>
+
+
+<!-- There is at least one user online in the chatroom (chatroom.users_online.all is not empty). -->
+<!-- But the current user is not one of them. -->

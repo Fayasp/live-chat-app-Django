@@ -4,7 +4,10 @@ from django.contrib.auth.models import User
 from . models import ChatGroup
 from . forms import *
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from django.http import Http404,HttpResponse
+
 # Create your views here.
 
 
@@ -12,8 +15,6 @@ def chat_view(request, chatroom_name = 'public_chat'):
     chat_group    = get_object_or_404(ChatGroup,group_name = chatroom_name)
     chat_messages = chat_group.chat_messages.all().order_by('-id')[:30]   
     form          = ChatMessageCreateForm()
-    print(chat_messages)
-
 
     other_user = None
     if chat_group.is_private:
@@ -62,7 +63,7 @@ def get_or_create_chatroom(request, username):
     if request.user.username == username:
         return redirect('home')
     
-    other_user = User.objects.get(username = username)
+    other_user   = User.objects.get(username = username)
     my_chatrooms = request.user.chat_groups.filter(is_private=True)
     
     
@@ -124,6 +125,9 @@ def chatroom_edit_view(request, chatroom_name):
     }
 
     return render(request,'a_rtchart/chatroom_edit.html',context)
+
+
+
 @login_required
 def delete_chatroom_view(request,chatroom_name):
     chat_group = get_object_or_404(ChatGroup, group_name = chatroom_name)
@@ -134,7 +138,6 @@ def delete_chatroom_view(request,chatroom_name):
             chat_group.delete()
             messages.success(request,"Chatroom Deleted")
             return redirect("home")
-
 
     return render(request,'a_rtchart/chatroom_delete.html',{"chat_group": chat_group})
 
@@ -151,3 +154,24 @@ def leave_chatroom_view(request, chatroom_name):
     
     return render(request,'partials/leave_chat.html')
     
+
+def chat_file_upload(request, chatroom_name):
+    chat_group = get_object_or_404(ChatGroup,group_name = chatroom_name)
+    if request.htmx and request.FILES:
+        file = request.FILES['file']
+        message = GroupMessage.objects.create(
+            file = file,
+            author = request.user,
+            group = chat_group
+        )
+
+        channel_layer = get_channel_layer()
+        event = {
+            'type' : 'message_handler',
+            'message_id' : message.id
+        }
+        async_to_sync(channel_layer.group_send)(
+            chatroom_name, event
+        )
+    return HttpResponse()
+
